@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UPS Monitor for macOS – README</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 2em; max-width: 900px; }
+    h1, h2, h3 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    ul { margin-left: 1.5em; }
+</style>
+</head>
+<body>
+
+<h1>UPS Monitor for macOS</h1>
+
+<p>
+This is a Python 3 application for macOS that monitors a connected UPS (Uninterruptible Power Supply) via <strong>HIDAPI</strong> and displays real‑time status in the macOS menu bar.  
+It also runs a TCP server that outputs the UPS status in JSON format for remote monitoring.
+</p>
+
+<hr>
+
+<h2>Features</h2>
+<ul>
+    <li>Displays UPS status (On AC Power / On Battery) in the macOS menu bar.</li>
+    <li>Colored icons:
+        <ul>
+            <li><span style="color:green;">Green</span> – On AC Power</li>
+            <li><span style="color:grey;">Grey</span> – Unknown - unplugged</li>
+            <li><span style="color:red;">Red</span> – On Battery</li>
+        </ul>
+    </li>
+    <li>Shows battery percentage, runtime remaining, and input voltage.</li>
+    <li>Updates automatically every 5 seconds.</li>
+    <li>Runs a TCP server on port <code>50000</code> to serve JSON status to clients.</li>
+    <li>Cross‑version macOS constant handling for compatibility.</li>
+    <li>Explicit PyObjC selector binding to avoid <code>BadPrototypeError</code>.</li>
+</ul>
+
+<hr>
+
+<h2>Requirements</h2>
+<ul>
+    <li>macOS 10.9 or later</li>
+    <li>Python 3.8+</li>
+    <li><code>hidapi</code> Python package</li>
+    <li><code>pyobjc</code> Python package</li>
+</ul>
+
+<pre>
+pip3 install hidapi pyobjc
+</pre>
+
+<hr>
+
+<h2>Driver Support Requirements</h2>
+<p>
+This script communicates with your UPS through Apple's built‑in <strong>UPS Power USB driver</strong>, which is integrated into macOS and tied into <em>System Preferences → Energy Saver</em> (or <em>System Settings → Battery</em> on newer macOS versions).
+</p>
+
+<p>
+If your UPS is not well supported by this Apple driver — for example, if the macOS battery/power icon in the menu bar shows no data, or reports <code>0V</code> voltage or <code>0%</code> battery — then this script will also be unable to display correct data.  
+It does not bypass the Apple driver or talk directly to the UPS hardware at a low level.
+</p>
+
+<p>
+To check support:
+</p>
+<ol>
+    <li>Connect your UPS via USB.</li>
+    <li>Open <strong>System Preferences → Energy Saver</strong> (or <strong>System Settings → Battery</strong>).</li>
+    <li>Look for UPS information such as battery percentage, runtime, and voltage.</li>
+</ol>
+<p>
+If these values are missing or incorrect, the script will reflect the same limitations.
+</p>
+
+<hr>
+
+<h2>Automatic Shutdown</h2>
+
+<p>
+Automatic system shutdown is provided by Apple's UPS Power Driver. <em>System Preferences -> Energy Saver -> UPS -> Shutdown Options</em> 
+
+<hr>
+
+<h2>Configuring Your UPS ID</h2>
+<p>
+Before running the script, you must manually set your UPS's <strong>Vendor ID</strong> and <strong>Product ID</strong> in the source code.  
+These IDs tell <code>hidapi</code> which USB device to open.
+</p>
+
+<p>To find your UPS's IDs, run the following command in Terminal:</p>
+
+<pre>
+python3 - <<'PY'
+import hid
+for d in hid.enumerate():
+    print(f"{d['vendor_id']:04x}:{d['product_id']:04x} {d['manufacturer_string']} {d['product_string']}")
+PY
+</pre>
+
+<p>
+Look for the line that matches your UPS manufacturer and model.  
+The first part (before the space) is in the format <code>vvvv:pppp</code> where:
+</p>
+<ul>
+    <li><code>vvvv</code> = Vendor ID (hexadecimal)</li>
+    <li><code>pppp</code> = Product ID (hexadecimal)</li>
+</ul>
+
+<p>
+Edit <code>ups_monitor.py</code> and set these values in the <code>open_ups()</code> function where <code>hid.device().open(vendor_id, product_id)</code> is called.
+</p>
+
+<hr>
+
+<h2>Installation</h2>
+<ol>
+    <li>Clone or download this repository.</li>
+    <li>Ensure your UPS is connected via USB and recognized by macOS.</li>
+    <li>Install the required Python packages (see above).</li>
+    <li>Set your UPS Vendor ID and Product ID in the script (see above).</li>
+    <li>Make the script executable:
+        <pre>chmod +x ups_monitor.py</pre>
+    </li>
+</ol>
+
+<hr>
+
+<h2>Usage</h2>
+<ol>
+    <li>Run the script:
+        <pre>python3 ./ups_monitor.py</pre>
+    </li>
+    <li>The UPS status icon will appear in the macOS menu bar.</li>
+    <li>Click the icon to view detailed UPS information or quit the app.</li>
+    <li>To get JSON status remotely:
+        <pre>nc &lt;your-mac-ip&gt; 50000</pre>
+        or
+        <pre>telnet &lt;your-mac-ip&gt; 50000</pre>
+    </li>
+</ol>
+
+<hr>
+
+<h2>JSON Output Example</h2>
+<pre>
+{
+    "battery_percent": 95,
+    "runtime_minutes": 120,
+    "input_voltage": 120.0,
+    "timestamp": "2026-08-27T02:15:00.123456",
+    "status": "On AC Power"
+}
+</pre>
+
+<hr>
+
+<h2>Autostart on macOS Boot</h2>
+<p>
+To have the UPS monitor start automatically when you log in:
+</p>
+<ol>
+    <li>Open <strong>Automator</strong> (found in Applications).</li>
+    <li>Create a new document and choose <strong>Application</strong>.</li>
+    <li>From the left panel, search for <strong>Run Shell Script</strong> and drag it into the workflow.</li>
+    <li>In the shell script box, enter:
+        <pre>
+/usr/local/bin/python3 /path/to/ups_monitor_macos.py
+        </pre>
+        Replace <code>/path/to/ups_monitor_macos.py</code> with the full path to your script.
+    </li>
+    <li>Save the Automator application somewhere (e.g., <code>~/Applications/UPS Monitor.app</code>).</li>
+    <li>Open <strong>System Settings �~F~R General �~F~R Login Items</strong>.</li>
+    <li>Click the <strong>+</strong> button and add your saved Automator application.</li>
+</ol>
+
+
+<h2>Troubleshooting</h2>
+<ul>
+    <li>If you see <code>BadPrototypeError</code>, ensure you are using the selector‑fixed version of the script.</li>
+    <li>If the JSON output never changes, check that your UPS is supported by <code>hidapi</code> and that the USB cable is connected.</li>
+    <li>If the TCP port is in use, change <code>PORT</code> in the script.</li>
+</ul>
+
+<hr>
+
+<h2>License</h2>
+<p>
+This project is released under the MIT License.  
+You are free to use, modify, and distribute it with attribution.
+</p>
+
+</body>
+</html>
+
