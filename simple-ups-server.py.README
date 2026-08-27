@@ -1,0 +1,1 @@
+This is a MacOS python script that sets up a JSON server for querying UPS status.  This is a minimal server that does not interact with the desktop
