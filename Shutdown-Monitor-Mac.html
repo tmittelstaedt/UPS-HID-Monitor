@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UPS Status Menu Bar Monitor - README</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+    h1, h2 { color: #2c3e50; }
+    code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    ul { margin-left: 20px; }
+</style>
+</head>
+<body>
+
+<h1>UPS Status Menu Bar Monitor for macOS</h1>
+
+<p>
+This Python 3 application runs in the macOS menu bar and monitors the status of a UPS (Uninterruptible Power Supply) via a TCP server.
+It displays a colored icon to indicate UPS status, shows full JSON data in a dropdown menu, and can automatically shut down the Mac if the UPS remains on battery for a configurable delay.
+</p>
+
+<h2>Features</h2>
+<ul>
+    <li>Runs in the macOS menu bar (no terminal window required once packaged).</li>
+    <li>Color-coded status icon:
+        <ul>
+            <li><strong>Green</strong> – UPS Online</li>
+            <li><strong>Red</strong> – UPS On Battery (shutdown countdown starts)</li>
+            <li><strong>Yellow</strong> – Unknown status</li>
+            <li><strong>Gray</strong> – Cannot connect to UPS server</li>
+        </ul>
+    </li>
+    <li>Hover tooltip shows short status.</li>
+    <li>Click menu shows full JSON data from the UPS server (read-only, selectable).</li>
+    <li>Automatic shutdown after a set delay if UPS stays on battery.</li>
+    <li>Logs events to <code>~/Library/Logs/ups-shutdown-monitor.log</code>.</li>
+</ul>
+
+<h2>Requirements</h2>
+<ul>
+    <li>macOS Catalina (10.15) or newer.</li>
+    <li>Python 3.x installed (macOS 12+ includes <code>python3</code> by default).</li>
+    <li>PyObjC (usually preinstalled on macOS); if missing, install as the owner (not root) via:
+    <pre><code>
+python3 -m pip install --upgrade pip
+python3 -m pip install pyobjc
+
+
+</code></pre></li>
+</ul>
+
+<h2>Installation</h2>
+<ol>
+    <li>Save the script as <code>Shutdown-Monitor-Mac.py</code>.</li>
+    <li>Make sure you have followed proper cr/lf terminations for MacOS if you have modified the script on a Windows system</li>
+    <li>The following Powershell command will remove carriage returns from a textfile created on Windows you plan on copying with SCP over to a Mac:
+        <pre><code>Get-Content "Shutdown-Monitor-Mac.py.txt" | ForEach-Object { $_ -replace "`r", "" } | Out-File "Shutdown-Monitor-Mac.py" -Encoding UTF8</code></pre>
+    </li> 
+    <li>The following Windows 11 command will copy the Mac-format script over to a Mac:
+        <pre><code>Get-Content "scp Shutdown-Monitor-Mac.py tedmittelstaedt@172.16.100.127:/Users/tedmittelstaedt/Shutdown-Monitor-Mac.py" -Encoding UTF8</code></pre>
+    </li> 
+    <li> On the Mac command line, make it executable:
+        <pre><code>chmod +x ups_menu.py</code></pre>
+    </li>
+    <li>Edit the configuration section at the top of the script:
+        <pre><code>SERVER_IP = "192.168.1.50"
+SERVER_PORT = 50000
+CHECK_INTERVAL = 30
+SHUTDOWN_DELAY = 300</code></pre>
+    </li>
+</ol>
+
+<h2>Running</h2>
+<pre><code>./ups_menu.py</code></pre>
+<p>
+The icon will appear in the macOS menu bar. Hover to see a short status, click to view full JSON data and access the Quit option.
+</p>
+
+<h2>Packaging as a macOS App</h2>
+<ol>
+    <li>Install py2app:
+        <pre><code>pip3 install py2app</code></pre>
+    </li>
+    <li>Create a <code>setup.py</code> file:
+        <pre><code>from setuptools import setup
+
+APP = ['ups_menu.py']
+OPTIONS = {'argv_emulation': True}
+
+setup(
+    app=APP,
+    options={'py2app': OPTIONS},
+    setup_requires=['py2app'],
+)</code></pre>
+    </li>
+    <li>Build the app:
+        <pre><code>python3 setup.py py2app</code></pre>
+    </li>
+    <li>Find your app in the <code>dist</code> folder and move it to <code>/Applications</code>.</li>
+</ol>
+
+<h2>License</h2>
+<p>
+This script is provided as-is, without warranty of any kind. Use at your own risk.
+</p>
+
+</body>
+</html>
