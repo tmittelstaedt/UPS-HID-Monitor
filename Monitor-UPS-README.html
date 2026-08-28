@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UPS Monitor PowerShell Script Documentation</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+    h1, h2, h3 { color: #2E5C99; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    code, pre { background-color: #f8f8f8; padding: 5px; display: block; border: 1px solid #ddd; }
+</style>
+</head>
+<body>
+
+<h1>UPS Monitor PowerShell Script – Documentation</h1>
+
+<h2>1. Overview</h2>
+<p>
+The <strong>UPS Monitor PowerShell Script</strong> is a Windows-based utility that:
+</p>
+<ul>
+    <li>Monitors UPS (Uninterruptible Power Supply) status.</li>
+    <li>Works with <strong>local UPS devices</strong> via Windows WMI (<code>Win32_Battery</code>) or <strong>remote UPS devices</strong> via a <strong>Network UPS Tools (NUT) server</strong>.</li>
+    <li>Displays a <strong>system tray icon</strong> with color-coded status:
+        <ul>
+            <li><span style="color:green;">Green</span> – UPS is online (AC power present)</li>
+            <li><span style="color:red;">Red</span> – UPS is on battery</li>
+            <li><span style="color:gray;">Gray</span> – Status unknown</li>
+        </ul>
+    </li>
+    <li>Optionally runs a <strong>TCP server</strong> to provide UPS status in JSON format for remote monitoring.</li>
+    <li>Can <strong>initiate a system shutdown</strong> if AC power is lost for a configurable delay.</li>
+</ul>
+
+<h2>2. Features</h2>
+<table>
+<tr><th>Feature</th><th>Description</th></tr>
+<tr><td>Tray Icon</td><td>Shows UPS status with color coding and tooltip text.</td></tr>
+<tr><td>Local UPS Support</td><td>Uses Windows WMI to read battery status.</td></tr>
+<tr><td>NUT Server Support</td><td>Queries a remote UPS via TCP port 3493.</td></tr>
+<tr><td>Shutdown Timer</td><td>Automatically shuts down the system after a set delay if AC power is lost.</td></tr>
+<tr><td>TCP Status Server</td><td>Serves UPS status as JSON for integration with other tools.</td></tr>
+<tr><td>Resource Cleanup</td><td>Disposes of icons and stops TCP listener on exit.</td></tr>
+</table>
+
+<h2>3. Requirements</h2>
+<ul>
+    <li><strong>Operating System:</strong> Windows 10, 11, or Windows Server with PowerShell 5.1+ or PowerShell 7.x.</li>
+    <li><strong>Permissions:</strong> Administrator rights required for shutdown functionality.</li>
+    <li><strong>Optional:</strong> Network UPS Tools (NUT) server for remote UPS monitoring.</li>
+</ul>
+
+<h2>4. Configuration Parameters</h2>
+<table>
+<tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>$NutServer</code></td><td><code>$null</code></td><td>IP or hostname of NUT server (leave <code>$null</code> for local UPS).</td></tr>
+<tr><td><code>$UpsName</code></td><td><code>$null</code></td><td>UPS name on NUT server.</td></tr>
+<tr><td><code>$shutdownDelaySeconds</code></td><td>300</td><td>Delay before shutdown after AC loss (in seconds).</td></tr>
+<tr><td><code>$enableTcpServer</code></td><td>true</td><td>Enable/disable TCP status server.</td></tr>
+<tr><td><code>$tcpPort</code></td><td>5555</td><td>TCP port for status server.</td></tr>
+</table>
+
+<h2>5. How It Works</h2>
+<ol>
+    <li><strong>Initialization</strong> – Loads .NET assemblies, creates tray icon, starts timer.</li>
+    <li><strong>Status Check</strong> – Queries NUT server or local UPS via WMI.</li>
+    <li><strong>Tray Icon Update</strong> – Changes icon color and tooltip.</li>
+    <li><strong>Shutdown Logic</strong> – Starts countdown on AC loss, shuts down if delay expires.</li>
+    <li><strong>TCP Server</strong> – Sends UPS status as JSON.</li>
+    <li><strong>Cleanup</strong> – Disposes icons and stops TCP listener.</li>
+</ol>
+
+<h2>6. Running the Script</h2>
+<pre><code>Set-ExecutionPolicy RemoteSigned -Scope Process
+.\UPSMonitor.ps1
+</code></pre>
+
+<h2>7. Example TCP JSON Output</h2>
+<pre><code>{
+  "UPSName": "Local UPS",
+  "Status": "Online",
+  "BatteryPercent": "100",
+  "EstimatedRunTime": 120,
+  "ChargingStatus": "Charging",
+  "TimeToFull": "00:30:00",
+  "TimestampUTC": "2026-08-21T12:34:56Z"
+}
+</code></pre>
+
+<h2>8. Troubleshooting</h2>
+<table>
+<tr><th>Issue</th><th>Possible Cause</th><th>Solution</th></tr>
+<tr><td>Tray icon not visible</td><td>Script not running</td><td>Check PowerShell console for errors.</td></tr>
+<tr><td>Shutdown not triggered</td><td>Insufficient permissions</td><td>Run PowerShell as Administrator.</td></tr>
+<tr><td>TCP server not working</td><td>Port in use</td><td>Change <code>$tcpPort</code> to an unused port.</td></tr>
+<tr><td>NUT server query fails</td><td>Wrong IP/UPS name</td><td>Verify <code>$NutServer</code> and <code>$UpsName</code> values.</td></tr>
+</table>
+
+<h2>9. Safety Notes</h2>
+<ul>
+    <li>Test without shutdown enabled before production use.</li>
+    <li>Set <code>$shutdownDelaySeconds</code> appropriately to avoid accidental shutdowns.</li>
+    <li>Secure TCP port with firewall rules if enabled.</li>
+</ul>
+
+<h2>10. License</h2>
+<p>
+This script is provided <strong>as-is</strong> without any warranty, express or implied.  
+You may modify and redistribute it for personal or organizational use, provided that:
+</p>
+<ul>
+    <li>Credit is given to the original author(s) where applicable.</li>
+    <li>It is not sold as a standalone commercial product.</li>
+    <li>Any modifications are clearly documented.</li>
+</ul>
+
+<h2>11. Change Log</h2>
+<table>
+<tr><th>Date</th><th>Version</th><th>Changes</th></tr>
+<tr><td>2026-08-21</td><td>1.0</td><td>Initial release of reconstructed UPS Monitor script.</td></tr>
+<tr><td>2026-08-21</td><td>1.1</td><td>Added HTML documentation and improved error handling.</td></tr>
+</table>
+
+<h2>12. Contact & Support</h2>
+<p>
+For questions, bug reports, or feature requests, you can:
+</p>
+<ul>
+    <li>Open an issue in your internal IT ticketing system.</li>
+    <li>Email your IT administrator or script maintainer.</li>
+    <li>Consult the Network UPS Tools (NUT) documentation if using a NUT server.</li>
+</ul>
+
+<h2>13. Appendix – Script Code</h2>
+<p>
+Below is the complete PowerShell script for reference.  
+Copy and save it as <code>UPSMonitor.ps1</code> to run it.
+</p>
+<pre><code>
+# (Insert the full reconstructed UPSMonitor.ps1 script here)
+</code></pre>
+
+</body>
+</html>
