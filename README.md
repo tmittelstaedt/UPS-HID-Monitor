@@ -24,8 +24,13 @@ the JSON servers are simple, just enough to enable networked shutdown.
 The following files are contained here:
 
 simple-ups-server.py    Python server that queries a USB connected UPS for status and makes that status available via a JSON query.  For Macintosh
+
 Shutdown-Monitor-Mac.py   Desktop cient program that queries a JSON server for UPS status and shuts the system down if the UPS loses AC power.  For Macintosh
+
 query-apc-on-usb.py    Diagnostic program to see if a USB-connected UPS is compatible with these scripts.  For Macintosh
+
 ups_monitor.py   Desktop program that creates an icon on a Macintosh desktop the user can click on and get status of the UPS, as well as making a JSON server available  For Windows
+
 Monitor-UPS.ps1   Desktop program that creates an icon on a Windows desktop the user can click on and get status of the UPS, as well as making a JSON server available  For Windows
+
 Monitor-UPS-ReadInfo.ps1  Command line diagnostic program that reads a USB-connected UPS to see if it is compatible with this software.    For Windows
