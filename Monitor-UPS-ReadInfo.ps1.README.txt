@@ -1,4 +1,4 @@
-This is a test script to see if your UPS is compatible with these scripts, here is an example run:
+This is a test script to see if your UPS is compatible with Monitor-UPS, here is an example run:
 
 PS C:\users\tedmittelstaedt\documents\work> powershell -ExecutionPolicy Bypass -File .\Monitor-UPS-ReadInfo.ps1
 
