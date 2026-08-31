@@ -31,6 +31,6 @@ query-apc-on-usb.py    Diagnostic program to see if a USB-connected UPS is compa
 
 ups_monitor.py   Desktop program that creates an icon on a Macintosh desktop the user can click on and get status of the UPS, as well as making a JSON server available  For Windows
 
-Monitor-UPS.ps1   Desktop program that creates an icon on a Windows desktop the user can click on and get status of the UPS, as well as making a JSON server available  For Windows
+Monitor-UPS.ps1   Desktop program that creates an icon on a Windows desktop the user can click on and get status of the UPS, as well as making a JSON server available.  It can also monitor a remote NUT server  For Windows
 
 Monitor-UPS-ReadInfo.ps1  Command line diagnostic program that reads a USB-connected UPS to see if it is compatible with this software.    For Windows
