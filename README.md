@@ -12,7 +12,7 @@ gracefully shut all of those machines down.
 
 Commercial software for UPSes generally takes the approach that control of an individual UPS on an individual computer is free, and often supply manufacturer's software to do this
 for free.  But any software that allows for a single PC to communicate status to multiple PCs plugged into the same UPS is considered commercial and costs, and often nowadays
-there are subscription free.   Also manufacturers will not keep their software packages updated for newer operating systems once their model of UPS they wrote it for is no longer
+there is subscription fee.   Also manufacturers will not keep their software packages updated for newer operating systems once their model of UPS they wrote it for is no longer
 being sold.
 
 All of these programs are scripts so the computer owner can easily modify them to accommodate different models of UPS.  See the documentation files
