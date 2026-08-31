@@ -27,7 +27,7 @@ simple-ups-server.py    Python server that queries a USB connected UPS for statu
 
 Shutdown-Monitor-Mac.py   Desktop cient program that queries a JSON server for UPS status and shuts the system down if the UPS loses AC power.  For Macintosh
 
-query-apc-on-usb.py    Diagnostic program to see if a USB-connected UPS is compatible with these scripts.  For Macintosh
+query-apc-on-usb.py    Diagnostic program to see if a USB-connected UPS is compatible with Monitor-UPS.ps1.  For Macintosh
 
 ups_monitor.py   Desktop program that creates an icon on a Macintosh desktop the user can click on and get status of the UPS, as well as making a JSON server available  For Windows
 
