@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UPS Menu Bar Monitor - Documentation</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; background-color: #f9f9f9; }
+    h1, h2, h3 { color: #333; }
+    code { background-color: #eee; padding: 2px 4px; border-radius: 4px; }
+    pre { background-color: #eee; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    .note { background-color: #ffffcc; padding: 10px; border-left: 4px solid #ffcc00; }
+    .important { background-color: #ffe6e6; padding: 10px; border-left: 4px solid #ff0000; }
+</style>
+</head>
+<body>
+
+<h1>UPS Menu Bar Monitor - Documentation</h1>
+<p>
+This application is a <strong>macOS menu bar utility</strong> written in Python using <code>PyObjC</code> and <code>AppKit</code>.  
+It connects to a <strong>Network UPS Tools (NUT)</strong> server to monitor UPS status and display it in the macOS menu bar.
+</p>
+
+<h2>Features</h2>
+<ul>
+    <li>Displays a colored ball in the menu bar:
+        <ul>
+            <li><span style="color:green;">Green</span> = UPS Online (<code>OL</code>)</li>
+            <li><span style="color:red;">Red</span> = UPS On Battery (<code>OB</code>)</li>
+            <li><span style="color:gray;">Gray</span> = No connection or unknown status</li>
+        </ul>
+    </li>
+    <li>Dropdown menu with vertical list of UPS stats:
+        <ul>
+            <li>Status</li>
+            <li>Battery Charge (%)</li>
+            <li>Runtime (seconds)</li>
+            <li>Device Model</li>
+            <li>Input Voltage (V)</li>
+            <li>Battery Date</li>
+        </ul>
+    </li>
+    <li>Automatic shutdown if UPS is on battery for more than a configurable threshold (default: 60 seconds).</li>
+    <li>Quit option in the menu.</li>
+</ul>
+
+<h2>Requirements</h2>
+<ul>
+    <li>macOS 10.15+ (Catalina or later)</li>
+    <li>Python 3.x</li>
+    <li><code>PyObjC</code> package</li>
+    <li>Access to a running NUT server</li>
+</ul>
+
+<h2>Installation</h2>
+<ol>
+    <li>Install Python 3 if not already installed.</li>
+    <li>Install PyObjC:
+        <pre><code>pip3 install pyobjc</code></pre>
+    </li>
+    <li>Save the script (e.g., <code>GetUPSStatusNUT.py</code>) to your desired location.</li>
+    <li>Ensure you have network access to the NUT server.</li>
+</ol>
+
+<h2>Configuration</h2>
+<p>Edit the following variables in the <code>UPSMenuBarApp</code> class <code>init()</code> method:</p>
+<pre><code>self.poll_interval = 5       # seconds between polls
+self.ob_threshold = 60       # seconds on battery before shutdown
+self.nut_server = "172.16.16.20"
+self.ups_name = "nutdev-usb1"
+self.username = ""
+self.password = ""
+</code></pre>
+
+<h2>Running the Application</h2>
+<pre><code>python3 GetUPSStatusNUT.py</code></pre>
+<p>The colored ball will appear in the macOS menu bar. Click it to see UPS stats and the Quit option.</p>
+
+<div class="important">
+<strong>Note:</strong> To allow automatic shutdown without a password prompt, edit the sudoers file:
+<pre><code>sudo visudo</code></pre>
+Add:
+<pre><code>yourusername ALL=(ALL) NOPASSWD: /sbin/shutdown</code></pre>
+</div>
+
+<h2>How It Works</h2>
+<ol>
+    <li>Connects to the NUT server via TCP.</li>
+    <li>Retrieves UPS variables using the <code>LIST VAR</code> command.</li>
+    <li>Updates the menu bar icon color based on <code>ups.status</code>.</li>
+    <li>Populates the dropdown menu with UPS stats.</li>
+    <li>If <code>ups.status</code> is <code>OB</code> for longer than <code>ob_threshold</code>, initiates shutdown.</li>
+</ol>
+
+<h2>Menu Layout</h2>
+<pre>
+Status: OL
+Charge: 100%
+Runtime: 3600s
+Model: APC Smart-UPS 1500
+Input Voltage: 120V
+Battery Date: 2023-05-01
+-------------------------
+Quit
+</pre>
+
+<h2>Customization</h2>
+<ul>
+    <li>Change colors in <code>make_colored_ball()</code> method.</li>
+    <li>Add or remove menu items by editing <code>self.menu_items</code> in <code>init()</code>.</li>
+    <li>Adjust polling frequency via <code>self.poll_interval</code>.</li>
+</ul>
+
+<h2>Troubleshooting</h2>
+<ul>
+    <li><strong>AttributeError: 'UPSMenuBarApp' object has no attribute 'start_polling'</strong>  
+        → Ensure <code>start_polling()</code> is indented inside the class.</li>
+    <li><strong>No UPS data</strong>  
+        → Check NUT server IP, UPS name, and network connectivity.</li>
+    <li><strong>Shutdown requires password</strong>  
+        → Update sudoers file as described above.</li>
+</ul>
+
+<hr>
+<p style="font-size:small;color:#666;">&copy; 2026 UPS Menu Bar Monitor Documentation</p>
+
+</body>
+</html>
