@@ -37,4 +37,4 @@ GetUPSStatusNUT.py.README.html  documentation for GetUPSStatusNUT.py
 
 Monitor-UPS.ps1   Desktop program that creates an icon on a Windows desktop the user can click on and get status of the UPS, as well as making a JSON server available.  It can also monitor a remote NUT server  For Windows
 
-Monitor-UPS-ReadInfo.ps1  Command line diagnostic program that reads a USB-connected UPS to see if it is compatible with Monitor-UPS.ps1.    For Windows
+Monitor-UPS-ReadInfo.ps1  Command line test diagnostic program that reads a USB-connected UPS to see if it is compatible with Monitor-UPS.ps1.    For Windows
