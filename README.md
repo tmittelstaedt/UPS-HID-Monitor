@@ -26,8 +26,9 @@ being sold.
 All of these programs are scripts so the computer owner can easily modify them to accommodate different models of UPS.  See the documentation files
 
 These were all debugged on the oldest, simplest, cheapest UPSes I could find with UPS monitoring ports that speak UPS USB HID.  There are some very proprietary UPSes that do
-have USB monitoring ports that are completely proprietary and use protocols that are alien to USB HID UPS.  These scripts do not support that.  Network parameters available via
-the JSON servers are simple, just enough to enable networked shutdown.
+have USB monitoring ports that are completely proprietary and use protocols that are alien to USB HID UPS.  These scripts do not support that.
+
+Network parameters available via the JSON servers are simple, just enough to enable networked shutdown.
 
 The following files are contained here:
 
