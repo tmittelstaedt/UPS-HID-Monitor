@@ -1,6 +1,6 @@
 This Repository contains a mix of Python scripts written for MacOS, Python scripts written for Ubuntu Desktop and Ubuntu Server, and Powershell scripts written for Windows.  There are three sets of scripts here.
 
-The first set is for monitoring UPS devices that are plugged into these operating systems via USB and they extend the basic monitoring supplied by the operating system.  Many also offer a JSON server mode where UPS status of the connected UPS is made available over the network in a read-only manner
+The first set is for monitoring UPS devices that are plugged into these operating systems via USB and they extend the basic monitoring supplied by the operating system as well as offer shutdown if the UPS goes on battery.  Many also offer a JSON server mode where UPS status of the connected UPS is made available over the network in a read-only manner
 
 The second scripts are NUT (Network UPS Tools) client monitoring scripts, these scripts query a NUT server and can replace programs like WinNUT and shut the system down if the remote NUT server reports the UPS is on battery
 
@@ -8,7 +8,7 @@ The third are JSON client scripts that monitor the JSON servers created by the f
 
 There are also 2 "bridge" scripts that run on either an apcupsd or NUT server and create a JSON server that reports UPS status read only.  The purpose of these are to allow queries from the JSON client scripts if the user has an operating system that cannot run any of the NUT or APCupsd client scripts and just wants to make a simple JSON query.
 
-None of these are executable software programs so as to allow easy user modification, easy bug fixes, and avoid the security requirements of executable programs on some operating systems and to make their operation completely transparent 0for easy security auditing by the user. 
+None of these are executable software programs so as to allow easy user modification, easy bug fixes, and avoid the security requirements of executable programs on some operating systems and to make their operation completely transparent for easy security auditing by the user. 
 
 One of the problems with using a UPS on these systems is that the operating systems will detect the UPS on boot and connect a driver to it, if the UPS follows the USB HID standard.
 That driver is generally extremely limited.  For example on MacOS it will show that a UPS such as an APC BackUPS CS is connected but it will not show voltage or frequency, it
