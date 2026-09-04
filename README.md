@@ -17,9 +17,9 @@ it shows a green battery icon in the tray, which will either switch status to on
 instead of shutting it down - just like a laptop.  While Windows allows a local admin to unload the USB driver for the UPS it will immediately reload it on boot.   Also, these
 default drivers do not have any method of communicating UPS status over the network to any other host.   So, a large UPS that multiple PCs are plugged into, cannot be used to gracefully shut all of those machines down.  UPS manufacturers who offer UPS shutdown software often charge for versions of it that allow for distributed shutdown information.
 
-Commercial software for UPSes generally takes the approach that control of an individual UPS on an individual computer is free, and often supply manufacturer's software to do this for free.  But any software that allows for a single PC to communicate status to multiple PCs plugged into the same UPS is considered commercial and costs, and worse nowadays is that there is subscription fee.   In addition manufacturers will not keep their software packages updated for newer operating systems once their model of UPS they wrote it for is no longer being sold.
+Commercial software for UPSes generally takes the approach that control of an individual UPS on an individual computer is free, and often manufacturer's software to do this is free.  But any software that allows for a single PC to communicate status to multiple PCs plugged into the same UPS is considered commercial and costs, and worse nowadays is that there is sometimes a subscription fee.   In addition, manufacturers will not keep their software packages updated for newer operating systems once their model of UPS they wrote it for is no longer being sold.
 
-All of these programs are scripts so the computer owner can easily modify them to accommodate different models of UPS.  See the documentation files
+All of the programs here are scripts so the computer owner can easily modify them to accommodate different models of UPS.  See the documentation files
 
 These were all debugged on the oldest, simplest, cheapest UPSes I could find with UPS monitoring ports that speak UPS USB HID.  There are some very proprietary UPSes that do
 have USB monitoring ports that are completely proprietary and use protocols that are alien to USB HID UPS.  These scripts do not support that.
