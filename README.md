@@ -43,3 +43,12 @@ GetUPSStatusNUT.py.README.html  documentation for GetUPSStatusNUT.py
 Monitor-UPS.ps1   Desktop program that creates an icon on a Windows desktop the user can click on and get status of the UPS, as well as making a JSON server available.  It can also monitor a remote NUT server and shut down the PC if the UPS goes on battery  For Windows
 
 Monitor-UPS-ReadInfo.ps1  Command line test diagnostic program that reads a USB-connected UPS to see if it is compatible with Monitor-UPS.ps1.    For Windows
+
+ubuntu_ups_monitor.py  Python script for Ubuntu Desktop that hooks into the upower program that is included in Ubuntu Desktop and provides a JSON server for a USB UPS HID connected UPS, this puts a status indicator icon on the desktop that it is running
+
+ubuntu_ups_info.py  Python script for Ubuntu Desktop that queries the upower/dbus program for stats for a USB UPS HID connected UPS, used for testing to see if the attached UPS will work
+
+README-Ubuntu-UPS_monitor.html   HTML documentation for the ubuntu_ups_monitor.py script
+
+ubuntuREADME-UPS_monitor.txt  textfile that is saved most likely in /root/UPS or other convenient location for use with the desktop icon to provide a readme menu for it
+
