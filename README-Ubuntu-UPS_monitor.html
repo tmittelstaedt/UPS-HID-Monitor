@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>UPS Monitor - README</title>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+h1, h2, h3 { color: #2c3e50; }
+code { background: #f4f4f4; padding: 2px 4px; border-radius: 4px; }
+pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<h1>UPS Monitor - README</h1>
+
+<p>
+This UPS Monitor script provides:
+</p>
+<ul>
+<li>A system tray icon showing UPS status (AC power, battery, unknown)</li>
+<li>A TCP JSON server for remote UPS status queries</li>
+<li>Automatic icon color changes based on UPS state</li>
+</ul>
+
+<hr>
+
+<h2>1. Requirements</h2>
+<p>Install the required packages:</p>
+<pre>
+sudo apt update
+sudo apt install gir1.2-ayatanaappindicator3-0.1 \
+                 libayatana-appindicator3-1 \
+                 python3-pil \
+                 python3-gi \
+                 python3-dbus \
+                 dbus-x11
+</pre>
+
+<p>
+These packages provide:
+</p>
+<ul>
+<li><strong>gir1.2-ayatanaappindicator3-0.1</strong> – Python GObject bindings for Ayatana AppIndicator3</li>
+<li><strong>libayatana-appindicator3-1</strong> – GLib-based AppIndicator library</li>
+<li><strong>python3-pil</strong> – Pillow image library for icon generation</li>
+<li><strong>python3-gi</strong> – Python GObject introspection</li>
+<li><strong>python3-dbus</strong> – Python D-Bus bindings</li>
+<li><strong>dbus-x11</strong> – Provides <code>dbus-launch</code> for session bus startup</li>
+</ul>
+
+<hr>
+
+<h2>2. Configuring UPower for Critical Power Action</h2>
+<p>
+To make the system power off automatically when the UPS battery reaches a critical level:
+</p>
+<ol>
+<li>Edit the UPower configuration file:
+<pre>
+sudo nano /etc/UPower/UPower.conf
+</pre>
+</li>
+<li>Find the line:
+<pre>
+#CriticalPowerAction=PowerOff
+</pre>
+and uncomment it (remove the <code>#</code>), so it reads:
+<pre>
+CriticalPowerAction=PowerOff
+</pre>
+</li>
+<li>Save and exit (<code>Ctrl+O</code>, <code>Enter</code>, <code>Ctrl+X</code>).</li>
+<li>Restart the UPower service:
+<pre>
+sudo systemctl restart upower
+</pre>
+</li>
+</ol>
+
+<hr>
+
+<h2>3. Running the UPS Monitor</h2>
+<p>
+Make the script executable:
+</p>
+<pre>
+chmod +x /path/to/ups_monitor.py
+</pre>
+<p>
+Run it from a terminal:
+</p>
+<pre>
+/path/to/ups_monitor.py
+</pre>
+<p>
+By default, the TCP server listens on port <code>50000</code>.  
+You can change it:
+</p>
+<pre>
+/path/to/ups_monitor.py --port 60000
+</pre>
+
+<hr>
+
+<h2>4. Creating a Desktop Launcher</h2>
+<p>
+To run the UPS Monitor by double-clicking an icon:
+</p>
+<ol>
+<li>Create a <code>.desktop</code> file:
+<pre>
+nano ~/.local/share/applications/ups-monitor.desktop
+</pre>
+</li>
+<li>Paste the following (adjust paths as needed):
+<pre>
+[Desktop Entry]
+Type=Application
+Name=UPS Monitor
+Comment=UPS status tray icon and TCP server
+Exec=/home/youruser/ups_monitor.py
+Icon=/home/youruser/.local/share/icons/ups_icon.png
+Terminal=false
+Categories=Utility;
+</pre>
+</li>
+<li>Make it executable:
+<pre>
+chmod +x ~/.local/share/applications/ups-monitor.desktop
+</pre>
+</li>
+<li>(Optional) Copy it to your desktop:
+<pre>
+cp ~/.local/share/applications/ups-monitor.desktop ~/Desktop/
+chmod +x ~/Desktop/ups-monitor.desktop
+</pre>
+On GNOME, right-click the icon and select <strong>Allow Launching</strong> the first time.</li>
+</ol>
+
+<hr>
+
+<h2>5. Autostart on Login</h2>
+<p>
+To start the UPS Monitor automatically when you log in:
+</p>
+<pre>
+mkdir -p ~/.config/autostart
+cp ~/.local/share/applications/ups-monitor.desktop ~/.config/autostart/
+</pre>
+
+<hr>
+
+<h2>6. Notes</h2>
+<ul>
+<li>The tray icon requires a running desktop session with a D-Bus session bus.</li>
+<li>The TCP server works in both desktop and headless modes.</li>
+<li>UPower must detect your UPS for the script to show accurate data.</li>
+</ul>
+
+</body>
+</html>
